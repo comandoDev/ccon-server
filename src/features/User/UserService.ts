@@ -25,6 +25,18 @@ export class UserService {
     return user
   }
 
+  async findByEmail (email: string): Promise<UserModel> {
+    const user = await this.userRepositoryImp.findByEmail(email)
+
+    if (!user) {
+      throw CustomResponse.NOT_FOUND('Usuário não cadastrado!', {
+        email
+      })
+    }
+
+    return user
+  }
+
   async update (
     userId: string,
     properties: Partial<IUser>

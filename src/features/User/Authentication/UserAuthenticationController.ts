@@ -4,11 +4,37 @@ import { Controller } from '../../../core/Controller'
 import { UserModel } from '../../../models/User/UserModel'
 import { UserServiceImp } from '../UserController'
 import { UserRules } from '../UserRules'
+import { UserAuthenticationService } from './UserAuthenticationService'
+
+const UserAuthenticationServiceImp = new UserAuthenticationService()
 
 class UserAuthenticationController extends Controller {
   protected rules = new UserRules()
 
   handle (): Router {
+    this.router.post('/signin', async (request: Request, response: Response, next: NextFunction) => {
+      try {
+        const {
+          accountName,
+          password
+        } = request.body
+
+        this.rules.validate(
+          { accountName },
+          { password }
+        )
+
+        const userAuthenticatedProps = await UserAuthenticationServiceImp.signIn(
+          accountName,
+          password
+        )
+
+        response.OK('Login efetuado com sucesso!', userAuthenticatedProps)
+      } catch (error) {
+        next(error)
+      }
+    })
+
     this.router.post('/signup', async (request: Request, response: Response, next: NextFunction) => {
       try {
         const {

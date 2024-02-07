@@ -2,6 +2,15 @@ import { Types } from 'mongoose'
 
 import Model from '../../core/Model'
 
+export interface IUserAuthenticatedProps {
+  token: string
+  user: IUser
+}
+
+export interface IUserTokenPayload {
+  userId: Types.ObjectId
+}
+
 export enum Gender {
   man = 'man',
   woman = 'woman'
