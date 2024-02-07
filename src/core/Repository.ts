@@ -5,7 +5,6 @@ import Model from './Model'
 export interface IUpdateDocumentProps {
   id: Types.ObjectId
   data: Model<any>
-  tenantId: Types.ObjectId
 }
 
 export abstract class Repository<MongoDB, Model> {
@@ -13,11 +12,11 @@ export abstract class Repository<MongoDB, Model> {
     this.mongoDB = mongoDB
   }
 
-  abstract findById(id: Types.ObjectId, tenantId: Types.ObjectId): Promise<Model | null>
+  abstract findById(id: Types.ObjectId): Promise<Model | null>
 
-  abstract create(data: Model, tenantId: Types.ObjectId): Promise<Model>
+  abstract create(data: Model): Promise<Model>
 
   abstract update(update: IUpdateDocumentProps): Promise<boolean>
 
-  abstract delete (id: Types.ObjectId, tenantId: Types.ObjectId): Promise<boolean>
+  abstract delete (id: Types.ObjectId): Promise<boolean>
 }
