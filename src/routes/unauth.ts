@@ -1,9 +1,13 @@
 import { Router } from 'express'
 
+import UserAuthenticationController from '../features/User/Authentication/UserAuthenticationController'
+
 class UnauthRouter {
   private unauthRouter = Router()
 
   route (): Router {
+    this.unauthRouter.use('/users', UserAuthenticationController)
+
     return this.unauthRouter
   }
 }
