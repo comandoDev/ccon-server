@@ -38,13 +38,13 @@ export class UserService {
   }
 
   async update (
-    userId: string,
+    userId: Types.ObjectId,
     properties: Partial<IUser>
   ): Promise<void> {
     if (properties.email) await this.validateDuplicatedEmail(properties.email)
 
     const updated = await this.userRepositoryImp.modifyProperties(
-      ObjectId(userId),
+      userId,
       properties
     )
 
@@ -70,7 +70,7 @@ export class UserService {
   async active (userId: string): Promise<void> {
     await this.findById(userId)
 
-    await this.update(userId, { active: true })
+    await this.update(ObjectId(userId), { active: true })
   }
 
   private async validateDuplicatedEmail (email: string): Promise<void> {

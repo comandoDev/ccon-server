@@ -1,8 +1,10 @@
-import { } from '../../../src'
+import { IUser } from '../../models/User/UserModel'
 
 declare global {
   namespace Express {
-    interface Request { }
+    interface Request {
+      user: IUser
+    }
 
     interface Response {
       OK: (message: string, data?: any) => void
