@@ -57,6 +57,10 @@ export class UserModel extends Model<IUser> {
     this.createdAt = user.createdAt
   }
 
+  get active (): IUser['active'] {
+    return this._active
+  }
+
   get object (): IUser {
     return {
       _id: this._id,

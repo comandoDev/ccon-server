@@ -9,6 +9,8 @@ export class UserAuthenticationService {
     const user = await UserServiceImp.findByEmail(email)
     if (!user) throw CustomResponse.NOT_FOUND('Usuario não cadastrado!', { email })
 
+    if (!user.active) throw CustomResponse.FORBIDDEN('Usuário desativado!', { email })
+
     const isValid = await Bcrypt.compare(password, user.object.password)
     if (!isValid) throw CustomResponse.UNPROCESSABLE_ENTITY('Senha incorreta!')
 

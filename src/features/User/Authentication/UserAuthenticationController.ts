@@ -15,17 +15,17 @@ class UserAuthenticationController extends Controller {
     this.router.post('/signin', async (request: Request, response: Response, next: NextFunction) => {
       try {
         const {
-          accountName,
+          email,
           password
         } = request.body
 
         this.rules.validate(
-          { accountName },
+          { email },
           { password }
         )
 
         const userAuthenticatedProps = await UserAuthenticationServiceImp.signIn(
-          accountName,
+          email,
           password
         )
 
@@ -64,6 +64,22 @@ class UserAuthenticationController extends Controller {
         response.CREATED('Usuário cadastrado com sucesso!', {
           createdUser
         })
+      } catch (error) {
+        next(error)
+      }
+    })
+
+    this.router.get('/:userId/active', async (request: Request, response: Response, next: NextFunction) => {
+      try {
+        const { userId } = request.params
+
+        this.rules.validate(
+          { userId }
+        )
+
+        await UserServiceImp.active(userId)
+
+        response.OK('Usuário ativado com sucesso!')
       } catch (error) {
         next(error)
       }

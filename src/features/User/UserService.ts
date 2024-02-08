@@ -67,6 +67,12 @@ export class UserService {
     return createdUser
   }
 
+  async active (userId: string): Promise<void> {
+    await this.findById(userId)
+
+    await this.update(userId, { active: true })
+  }
+
   private async validateDuplicatedEmail (email: string): Promise<void> {
     const existsEmail = await this.userRepositoryImp.findByEmail(email)
 
