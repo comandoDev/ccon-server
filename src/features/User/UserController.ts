@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express'
 
 import { Controller } from '../../core/Controller'
-import { UserModel } from '../../models/User/UserModel'
 import { UserRepositoryImp } from '../../models/User/UserMongoDB'
 import { UserRules } from './UserRules'
 import { UserService } from './UserService'
@@ -32,77 +31,32 @@ class UserAuthenticationController extends Controller {
       }
     })
 
-    this.router.post('/', async (request: Request, response: Response, next: NextFunction) => {
+    this.router.patch('/', async (request: Request, response: Response, next: NextFunction) => {
       try {
+        const { user } = request
+
         const {
           avatar,
           name,
           gender,
           email,
-          password,
-          passwordConfirmation,
           departament
         } = request.body
 
         this.rules.validate(
-          { name },
-          { email },
-          { password },
-          { passwordsMatch: [password, passwordConfirmation] },
-          { gender },
-          { departament },
+          { name, isRequiredField: false },
+          { email, isRequiredField: false },
+          { gender, isRequiredField: false },
+          { departament, isRequiredField: false },
           { avatar, isRequiredField: false }
         )
 
-        const userModel = new UserModel(request.body)
-
-        const createdUser = await UserServiceImp.create(userModel)
-
-        response.OK('Usuário cadastrado com sucesso!', {
-          createdUser
-        })
-      } catch (error) {
-        next(error)
-      }
-    })
-
-    this.router.patch('/:userId', async (request: Request, response: Response, next: NextFunction) => {
-      try {
-        const { userId } = request.params
-
-        const {
-          biotype,
-          height,
-          weight,
-          coachId,
-          name,
-          gender,
-          age,
-          objectiveId,
-          email
-        } = request.body
-
-        this.rules.validate(
-          { biotype, isRequiredField: false },
-          { height, isRequiredField: false },
-          { weight, isRequiredField: false },
-          { coachId, isRequiredField: false },
-          { name, isRequiredField: false },
-          { gender, isRequiredField: false },
-          { age, isRequiredField: false },
-          { objectiveId, isRequiredField: false },
-          { email, isRequiredField: false },
-          { userId, isRequiredField: false }
-        )
-
         await UserServiceImp.update(
-          userId,
+          user._id!,
           request.body
         )
 
-        response.OK('Usuário atualizado com sucesso!', {
-          userId
-        })
+        response.OK('Usuário atualizado com sucesso!')
       } catch (error) {
         next(error)
       }

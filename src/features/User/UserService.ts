@@ -25,14 +25,26 @@ export class UserService {
     return user
   }
 
+  async findByEmail (email: string): Promise<UserModel> {
+    const user = await this.userRepositoryImp.findByEmail(email)
+
+    if (!user) {
+      throw CustomResponse.NOT_FOUND('Usuário não cadastrado!', {
+        email
+      })
+    }
+
+    return user
+  }
+
   async update (
-    userId: string,
+    userId: Types.ObjectId,
     properties: Partial<IUser>
   ): Promise<void> {
     if (properties.email) await this.validateDuplicatedEmail(properties.email)
 
     const updated = await this.userRepositoryImp.modifyProperties(
-      ObjectId(userId),
+      userId,
       properties
     )
 
@@ -53,6 +65,12 @@ export class UserService {
     await MailServer.sendActiveUserMail(createdUser._id!, createdUser.object.email)
 
     return createdUser
+  }
+
+  async active (userId: string): Promise<void> {
+    await this.findById(userId)
+
+    await this.update(ObjectId(userId), { active: true })
   }
 
   private async validateDuplicatedEmail (email: string): Promise<void> {

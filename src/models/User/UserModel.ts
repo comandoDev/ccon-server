@@ -2,6 +2,15 @@ import { Types } from 'mongoose'
 
 import Model from '../../core/Model'
 
+export interface IUserAuthenticatedProps {
+  token: string
+  user: IUser
+}
+
+export interface IUserTokenPayload {
+  userId: Types.ObjectId
+}
+
 export enum Gender {
   man = 'man',
   woman = 'woman'
@@ -46,6 +55,10 @@ export class UserModel extends Model<IUser> {
     this._password = user.password
     this._departament = user.departament
     this.createdAt = user.createdAt
+  }
+
+  get active (): IUser['active'] {
+    return this._active
   }
 
   get object (): IUser {
