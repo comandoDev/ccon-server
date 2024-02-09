@@ -62,7 +62,7 @@ class UserAuthenticationController extends Controller {
         const createdUser = await UserServiceImp.create(userModel)
 
         response.CREATED('Usuário cadastrado com sucesso!', {
-          createdUser
+          createdUser: createdUser.object
         })
       } catch (error) {
         next(error)

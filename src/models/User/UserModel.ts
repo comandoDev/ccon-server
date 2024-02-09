@@ -84,7 +84,6 @@ export class UserModel extends Model<IUser> {
       gender: this._gender,
       name: this._name,
       email: this._email,
-      password: this._password,
       departament: this._departament,
       createdAt: this.createdAt
     }

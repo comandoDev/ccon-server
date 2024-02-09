@@ -9,7 +9,7 @@ export const UserServiceImp = new UserService(
   UserRepositoryImp
 )
 
-class UserAuthenticationController extends Controller {
+class UserController extends Controller {
   protected rules = new UserRules()
 
   handle (): Router {
@@ -66,5 +66,5 @@ class UserAuthenticationController extends Controller {
   }
 }
 
-const userAuthenticationController = new UserAuthenticationController()
-export default userAuthenticationController.handle()
+const userController = new UserController()
+export default userController.handle()
