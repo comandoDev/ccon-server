@@ -38,8 +38,8 @@ export class Server {
   }
 
   start (): void {
-    this._app.listen(this.port, env.ip, () => {
-      console.log(`Server running at: ${env.ip}:${this.port}`)
+    this._app.listen(this.port, () => {
+      console.log(`Server running at: ${this.port}`)
     })
   }
 }
