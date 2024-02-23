@@ -14,7 +14,7 @@ export class UserRules extends Rules {
 
     this.validator.addRule('name', {
       validator: (value: string) => nameValidator(value),
-      message: 'Nome inválido. Informe um nome válido!'
+      message: 'Nome inválido. Informe seu nome completo!'
     })
 
     this.validator.addRule('gender', {

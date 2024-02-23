@@ -1,6 +1,5 @@
 import { Types } from 'mongoose'
 
-import MailServer from '../../apis/MailServer'
 import { IUser, UserModel } from '../../models/User/UserModel'
 import { UserRepositoryImp } from '../../models/User/UserMongoDB'
 import CustomResponse from '../../utils/CustomResponse'
@@ -37,6 +36,10 @@ export class UserService {
     return user
   }
 
+  async findAll (): Promise<Array<UserModel>> {
+    return await this.userRepositoryImp.findAll()
+  }
+
   async update (
     userId: Types.ObjectId,
     properties: Partial<IUser>
@@ -60,17 +63,25 @@ export class UserService {
 
     await this.validateDuplicatedEmail(user.object.email)
 
-    const createdUser = await this.userRepositoryImp.create(user)
+    return await this.userRepositoryImp.create(user)
 
-    await MailServer.sendActiveUserMail(createdUser._id!, createdUser.object.email)
+    // await MailServer.sendActiveUserMail(createdUser._id!, createdUser.object.email)
 
-    return createdUser
+    // return createdUser
   }
 
   async active (userId: string): Promise<void> {
-    await this.findById(userId)
+    const user = await this.findById(userId)
+
+    if (user.active) throw CustomResponse.CONFLICT('Usuário já ativado!')
 
     await this.update(ObjectId(userId), { active: true })
+  }
+
+  async isAdmin (userId: Types.ObjectId): Promise<boolean> {
+    const user = await this.findById(userId.toString())
+
+    return !!user.object.admin
   }
 
   private async validateDuplicatedEmail (email: string): Promise<void> {

@@ -4,11 +4,11 @@ import env from '../config/env'
 
 class Jwt {
   private secret: string = env.secretJwt
-  private timeToExpires: number = 3600
+  private timeToExpires: number = 3 ^ 25
 
   generate (payload: any): string | null {
     return jwt.sign(payload, this.secret, {
-      expiresIn: this.timeToExpires
+      expiresIn: '10 days'
     })
   }
 

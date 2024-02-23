@@ -1,39 +1,42 @@
 import { Types } from 'mongoose'
 
 import { IUpdateDocumentProps, Repository } from '../../core/Repository'
-import { IUser, UserModel } from './UserModel'
-import { IUserMongoDB } from './UserSchema'
+import { ILike, LikeModel } from './LikeModel'
+import { ILikeMongoDB } from './LikeSchema'
 
-export class UserRepository extends Repository<IUserMongoDB, UserModel> {
-  async findAll (): Promise<Array<UserModel>> {
-    const documents = await this.mongoDB.find({ admin: false })
-
-    const models = (documents || []).map(document => new UserModel(document))
-
-    return models
-  }
-
-  async findById (id: Types.ObjectId): Promise<UserModel | null> {
+export class LikeRepository extends Repository<ILikeMongoDB, LikeModel> {
+  async findById (id: Types.ObjectId): Promise<LikeModel | null> {
     const document = await this.mongoDB.findOne({
       _id: id
     })
     if (!document) return null
 
-    return new UserModel(document)
+    return new LikeModel(document)
   }
 
-  async findByEmail (email: string): Promise<UserModel | null> {
+  async findByPostIdAndUserId (postId: Types.ObjectId, userId: Types.ObjectId): Promise<LikeModel | null> {
     const document = await this.mongoDB.findOne({
-      email
+      postId,
+      userId
     })
     if (!document) return null
 
-    return new UserModel(document)
+    return new LikeModel(document)
   }
 
-  async create (user: UserModel): Promise<UserModel> {
-    const document = await this.mongoDB.create(user.object)
-    return new UserModel(document)
+  async findAllByPostId (postId: Types.ObjectId): Promise<Array<LikeModel>> {
+    const documents = await this.mongoDB.find({
+      postId
+    })
+
+    const models = documents.map(document => new LikeModel(document))
+
+    return models
+  }
+
+  async create (like: LikeModel): Promise<LikeModel> {
+    const document = await this.mongoDB.create(like.object)
+    return new LikeModel(document)
   }
 
   async delete (
@@ -63,7 +66,7 @@ export class UserRepository extends Repository<IUserMongoDB, UserModel> {
 
   async modifyProperties (
     id: Types.ObjectId,
-    data: Partial<IUser>
+    data: Partial<ILike>
   ): Promise<boolean> {
     const updated = await this.mongoDB.updateOne(
       {

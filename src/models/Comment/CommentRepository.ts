@@ -1,39 +1,42 @@
 import { Types } from 'mongoose'
 
 import { IUpdateDocumentProps, Repository } from '../../core/Repository'
-import { IUser, UserModel } from './UserModel'
-import { IUserMongoDB } from './UserSchema'
+import { CommentModel, IComment } from './CommentModel'
+import { ICommentMongoDB } from './CommentSchema'
 
-export class UserRepository extends Repository<IUserMongoDB, UserModel> {
-  async findAll (): Promise<Array<UserModel>> {
-    const documents = await this.mongoDB.find({ admin: false })
-
-    const models = (documents || []).map(document => new UserModel(document))
-
-    return models
-  }
-
-  async findById (id: Types.ObjectId): Promise<UserModel | null> {
+export class CommentRepository extends Repository<ICommentMongoDB, CommentModel> {
+  async findById (id: Types.ObjectId): Promise<CommentModel | null> {
     const document = await this.mongoDB.findOne({
       _id: id
     })
     if (!document) return null
 
-    return new UserModel(document)
+    return new CommentModel(document)
   }
 
-  async findByEmail (email: string): Promise<UserModel | null> {
+  async findByPostIdAndUserId (postId: Types.ObjectId, userId: Types.ObjectId): Promise<CommentModel | null> {
     const document = await this.mongoDB.findOne({
-      email
+      postId,
+      userId
     })
     if (!document) return null
 
-    return new UserModel(document)
+    return new CommentModel(document)
   }
 
-  async create (user: UserModel): Promise<UserModel> {
-    const document = await this.mongoDB.create(user.object)
-    return new UserModel(document)
+  async findAllByPostId (postId: Types.ObjectId): Promise<Array<CommentModel>> {
+    const documents = await this.mongoDB.find({
+      postId
+    })
+
+    const models = documents.map(document => new CommentModel(document))
+
+    return models
+  }
+
+  async create (comment: CommentModel): Promise<CommentModel> {
+    const document = await this.mongoDB.create(comment.object)
+    return new CommentModel(document)
   }
 
   async delete (
@@ -63,7 +66,7 @@ export class UserRepository extends Repository<IUserMongoDB, UserModel> {
 
   async modifyProperties (
     id: Types.ObjectId,
-    data: Partial<IUser>
+    data: Partial<IComment>
   ): Promise<boolean> {
     const updated = await this.mongoDB.updateOne(
       {

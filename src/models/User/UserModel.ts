@@ -8,7 +8,12 @@ export interface IUserAuthenticatedProps {
 }
 
 export interface IUserTokenPayload {
-  userId: Types.ObjectId
+  userId?: Types.ObjectId
+  admin?: boolean
+  avatar?: string
+  name: string
+  email: string
+  departament: string
 }
 
 export enum Gender {
@@ -84,7 +89,6 @@ export class UserModel extends Model<IUser> {
       gender: this._gender,
       name: this._name,
       email: this._email,
-      password: this._password,
       departament: this._departament,
       createdAt: this.createdAt
     }

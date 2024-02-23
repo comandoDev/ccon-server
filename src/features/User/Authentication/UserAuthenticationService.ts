@@ -17,8 +17,21 @@ export class UserAuthenticationService {
     return this.generateAuthenticatedProps(user)
   }
 
+  async signUp (user: UserModel): Promise<IUserAuthenticatedProps> {
+    const createdUser = await UserServiceImp.create(user)
+
+    return this.generateAuthenticatedProps(createdUser)
+  }
+
   private generateAuthenticatedProps (user: UserModel): IUserAuthenticatedProps {
-    const token = this.generateAccessToken({ userId: user._id! })
+    const token = this.generateAccessToken({
+      userId: user._id,
+      admin: user.object.admin,
+      avatar: user.object.avatar,
+      departament: user.object.departament,
+      email: user.object.email,
+      name: user.object.name
+    })
 
     return {
       token,

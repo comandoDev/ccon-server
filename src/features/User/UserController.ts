@@ -9,22 +9,16 @@ export const UserServiceImp = new UserService(
   UserRepositoryImp
 )
 
-class UserAuthenticationController extends Controller {
+class UserController extends Controller {
   protected rules = new UserRules()
 
   handle (): Router {
-    this.router.get('/:userId', async (request: Request, response: Response, next: NextFunction) => {
+    this.router.get('/profile', async (request: Request, response: Response, next: NextFunction) => {
       try {
-        const { userId } = request.params
-
-        this.rules.validate(
-          { userId }
-        )
-
-        const user = await UserServiceImp.findById(userId)
+        const { user } = request
 
         response.OK('Usuário encontrado com sucesso!', {
-          user: user.show
+          user
         })
       } catch (error) {
         next(error)
@@ -66,5 +60,5 @@ class UserAuthenticationController extends Controller {
   }
 }
 
-const userAuthenticationController = new UserAuthenticationController()
-export default userAuthenticationController.handle()
+const userController = new UserController()
+export default userController.handle()
