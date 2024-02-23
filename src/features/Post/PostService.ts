@@ -1,9 +1,12 @@
-import { CommentServiceImp, LikeServiceImp } from '../../features/Post/PostController'
+import MailServer from '../../apis/MailServer'
+import { UserServiceImp } from '../../features/User/UserController'
 import { CommentModel, ICommentCreationProps } from '../../models/Comment/CommentModel'
 import { IPost, IPostListFilters, PostModel } from '../../models/Post/PostModel'
 import { PostRepositoryImp } from '../../models/Post/PostMongoDB'
 import CustomResponse from '../../utils/CustomResponse'
 import ObjectId from '../../utils/ObjectId'
+import { CommentServiceImp } from '../Comment/CommentController'
+import { LikeServiceImp } from '../Like/LikeController'
 
 export class PostService {
   constructor (
@@ -27,6 +30,9 @@ export class PostService {
     const comments = await CommentServiceImp.findAllByPostId(ObjectId(postId))
     post.comments = comments.map(comment => comment.show)
 
+    const user = await UserServiceImp.findById(post.userId.toString())
+    post.user = user.show
+
     return post
   }
 
@@ -47,7 +53,19 @@ export class PostService {
   }
 
   async create (post: PostModel): Promise<PostModel> {
-    return await this.postRepositoryImp.create(post)
+    const isAdmin = await UserServiceImp.isAdmin(post.userId)
+
+    const createdPost = await this.postRepositoryImp.create(post)
+
+    if (isAdmin) {
+      const users = await UserServiceImp.findAll()
+
+      Promise.all(users.map(async (user) => {
+        await MailServer.sendNewAdminPostMail(user.object.email)
+      }))
+    }
+
+    return createdPost
   }
 
   async list (filters: IPostListFilters) {
@@ -77,6 +95,16 @@ export class PostService {
 
   async pin (postId: string): Promise<void> {
     await this.findById(postId)
+
+    const pinnedPosts = await this.postRepositoryImp.findAllPinneds()
+
+    if (pinnedPosts.length >= 5) {
+      const firstPinned = pinnedPosts[4]
+
+      await this.update(firstPinned._id!.toString(), {
+        pinned: false
+      })
+    }
 
     await this.update(postId, {
       pinned: true

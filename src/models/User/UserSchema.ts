@@ -34,7 +34,7 @@ class UserSchema extends Schema<IUserDocument> {
       },
       active: {
         type: Boolean,
-        default: false
+        default: true
       },
       admin: {
         type: Boolean,

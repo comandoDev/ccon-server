@@ -12,7 +12,7 @@ export const hasPostPermission = async (request: Request, response: Response, ne
 
     const post = await PostServiceImp.findById(params.postId)
 
-    if (!post.userId.equals(user._id)) throw CustomResponse.FORBIDDEN('Você não possui acesso para alterar essa publicação!')
+    if (!post.userId.equals(user._id) && !user.admin) throw CustomResponse.FORBIDDEN('Você não possui acesso para alterar essa publicação!')
 
     next()
   } catch (error) {

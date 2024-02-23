@@ -8,7 +8,7 @@ class Jwt {
 
   generate (payload: any): string | null {
     return jwt.sign(payload, this.secret, {
-      expiresIn: this.timeToExpires
+      expiresIn: '10 days'
     })
   }
 

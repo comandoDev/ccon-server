@@ -5,6 +5,7 @@ import { CommentRepositoryImp } from '../../models/Comment/CommentMongoDB'
 import { UserRepositoryImp } from '../../models/User/UserMongoDB'
 import CustomResponse from '../../utils/CustomResponse'
 import ObjectId from '../../utils/ObjectId'
+import { PostServiceImp } from '../Post/PostController'
 import { UserServiceImp } from '../User/UserController'
 
 export class CommentService {
@@ -18,7 +19,7 @@ export class CommentService {
     const comment = await this.commentRepositoryImp.findById(ObjectId(commentId))
 
     if (!comment) {
-      throw CustomResponse.NOT_FOUND('Curtida não cadastrada!', {
+      throw CustomResponse.NOT_FOUND('Comentário não cadastrado!', {
         commentId
       })
     }
@@ -42,6 +43,26 @@ export class CommentService {
     )
 
     return comments
+  }
+
+  async deleteByPostIdAndUserId (postId: string, userId: Types.ObjectId): Promise<void> {
+    await PostServiceImp.findById(postId)
+
+    const comment = await this.commentRepositoryImp.findByPostIdAndUserId(ObjectId(postId), userId)
+    if (!comment) {
+      throw CustomResponse.NOT_FOUND('Comentário não cadastrado!')
+    }
+
+    await this.commentRepositoryImp.delete(comment._id!)
+  }
+
+  async deleteById (commentId: string): Promise<void> {
+    await this.findById(commentId)
+
+    const comment = await this.commentRepositoryImp.delete(ObjectId(commentId))
+    if (!comment) {
+      throw CustomResponse.INTERNAL_SERVER_ERROR('Algo deu errado removendo o comentário!')
+    }
   }
 
   async create (comment: CommentModel): Promise<CommentModel> {

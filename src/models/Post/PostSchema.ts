@@ -1,6 +1,7 @@
 import mongoose, { AggregatePaginateModel, Document, Types } from 'mongoose'
 
 import Schema from '../../core/Schema'
+import UserMongoDB from '../User/UserMongoDB'
 import { IPost } from './PostModel'
 
 export interface IPostDocument extends Document, Omit<IPost, '_id'> { }
@@ -25,11 +26,8 @@ class PostSchema extends Schema<IPostDocument> {
       },
       userId: {
         type: Types.ObjectId,
-        require: true
-      },
-      commentsIds: {
-        type: Array<String>,
-        default: []
+        require: true,
+        ref: UserMongoDB
       },
       createdAt: {
         type: Date,

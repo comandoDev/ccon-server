@@ -16,7 +16,7 @@ export class LikeService {
     this.likeRepositoryImp = likeRepositoryImp
   }
 
-  async findById (likeId: string): Promise<LikeModel> {
+  async findById (likeId: Types.ObjectId): Promise<LikeModel> {
     const like = await this.likeRepositoryImp.findById(ObjectId(likeId))
 
     if (!like) {
@@ -47,7 +47,10 @@ export class LikeService {
   }
 
   async create (like: LikeModel): Promise<LikeModel> {
-    await this.findPostById(like.postId.toString())
+    const post = await this.findPostById(like.postId.toString())
+
+    const exists = await this.existsByPostIdAndUserId(post._id!, like.userId)
+    if (exists) throw CustomResponse.CONFLICT('Curtida já cadastrada!')
 
     return await this.likeRepositoryImp.create(like)
   }
@@ -61,6 +64,12 @@ export class LikeService {
     }
 
     await this.likeRepositoryImp.delete(like._id!)
+  }
+
+  private async existsByPostIdAndUserId (postId: Types.ObjectId, userId: Types.ObjectId): Promise<boolean> {
+    const like = await this.likeRepositoryImp.findByPostIdAndUserId(postId, userId)
+
+    return !!like
   }
 
   private async findPostById (postId: string): Promise<PostModel> {

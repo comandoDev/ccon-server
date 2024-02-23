@@ -8,7 +8,12 @@ export interface IUserAuthenticatedProps {
 }
 
 export interface IUserTokenPayload {
-  userId: Types.ObjectId
+  userId?: Types.ObjectId
+  admin?: boolean
+  avatar?: string
+  name: string
+  email: string
+  departament: string
 }
 
 export enum Gender {

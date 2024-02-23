@@ -30,9 +30,11 @@ class LikeController extends Controller {
           userId: user._id!
         })
 
-        await LikeServiceImp.create(likeModel)
+        const createdLike = await LikeServiceImp.create(likeModel)
 
-        response.OK('Curtida cadastrada com sucesso!')
+        response.OK('Curtida cadastrada com sucesso!', {
+          like: createdLike.object
+        })
       } catch (error) {
         next(error)
       }

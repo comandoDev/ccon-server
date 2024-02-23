@@ -14,6 +14,16 @@ export class CommentRepository extends Repository<ICommentMongoDB, CommentModel>
     return new CommentModel(document)
   }
 
+  async findByPostIdAndUserId (postId: Types.ObjectId, userId: Types.ObjectId): Promise<CommentModel | null> {
+    const document = await this.mongoDB.findOne({
+      postId,
+      userId
+    })
+    if (!document) return null
+
+    return new CommentModel(document)
+  }
+
   async findAllByPostId (postId: Types.ObjectId): Promise<Array<CommentModel>> {
     const documents = await this.mongoDB.find({
       postId

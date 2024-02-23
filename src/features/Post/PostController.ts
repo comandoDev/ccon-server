@@ -3,25 +3,13 @@ import { NextFunction, Request, Response, Router } from 'express'
 import { Controller } from '../../core/Controller'
 import { adminMiddleware } from '../../middlewares/adminMiddleware'
 import { hasPostPermission } from '../../middlewares/hasPostPermission'
-import { CommentRepositoryImp } from '../../models/Comment/CommentMongoDB'
-import { LikeRepositoryImp } from '../../models/Like/LikeMongoDB'
 import { PostModel } from '../../models/Post/PostModel'
 import { PostRepositoryImp } from '../../models/Post/PostMongoDB'
-import { CommentService } from '../Comment/CommentService'
-import { LikeService } from '../Like/LikeService'
 import { PostRules } from './PostRules'
 import { PostService } from './PostService'
 
 export const PostServiceImp = new PostService(
   PostRepositoryImp
-)
-
-export const LikeServiceImp = new LikeService(
-  LikeRepositoryImp
-)
-
-export const CommentServiceImp = new CommentService(
-  CommentRepositoryImp
 )
 
 class PostController extends Controller {
@@ -36,6 +24,20 @@ class PostController extends Controller {
 
         response.OK('Publicações encontradas com sucesso!', {
           posts
+        })
+      } catch (error) {
+        next(error)
+      }
+    })
+
+    this.router.get('/:postId', async (request: Request, response: Response, next: NextFunction) => {
+      try {
+        const { postId } = request.params
+
+        const post = await PostServiceImp.findById(postId)
+
+        response.OK('Publicação encontrada com sucesso!', {
+          post: post.show
         })
       } catch (error) {
         next(error)
@@ -138,7 +140,7 @@ class PostController extends Controller {
 
           const posts = await PostServiceImp.pin(postId)
 
-          response.OK('Publicações encontradas com sucesso!', {
+          response.OK('Publicação fixada com sucesso!', {
             posts
           })
         } catch (error) {
@@ -159,67 +161,13 @@ class PostController extends Controller {
 
           const posts = await PostServiceImp.unpin(postId)
 
-          response.OK('Publicações encontradas com sucesso!', {
+          response.OK('Publicação desfixada com sucesso!', {
             posts
           })
         } catch (error) {
           next(error)
         }
       })
-
-    this.router.post('/:postId/comment', async (request: Request, response: Response, next: NextFunction) => {
-      try {
-        const { user } = request
-
-        const { postId } = request.params
-
-        const {
-          text
-        } = request.body
-
-        this.rules.validate(
-          { postId },
-          { text }
-        )
-
-        await PostServiceImp.comment({
-          postId: postId as string,
-          text,
-          userId: user._id!
-        })
-
-        response.OK('Comentário cadastrado com sucesso!')
-      } catch (error) {
-        next(error)
-      }
-    })
-
-    this.router.post('/:postId/uncomment', async (request: Request, response: Response, next: NextFunction) => {
-      try {
-        const { user } = request
-
-        const { postId } = request.params
-
-        const {
-          text
-        } = request.body
-
-        this.rules.validate(
-          { postId },
-          { text }
-        )
-
-        await PostServiceImp.comment({
-          postId: postId as string,
-          text,
-          userId: user._id!
-        })
-
-        response.OK('Comentário cadastrado com sucesso!')
-      } catch (error) {
-        next(error)
-      }
-    })
 
     return this.router
   }

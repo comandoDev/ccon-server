@@ -14,8 +14,19 @@ export class PostRepository extends Repository<IPostMongoDB, PostModel> {
     return new PostModel(document)
   }
 
+  async findAllPinneds (): Promise<Array<PostModel>> {
+    const documents = await this.mongoDB.find({
+      pinned: true
+    })
+
+    const models = (documents || []).map(document => new PostModel(document))
+
+    return models
+  }
+
   async create (post: PostModel): Promise<PostModel> {
     const document = await this.mongoDB.create(post.object)
+
     return new PostModel(document)
   }
 
@@ -71,6 +82,7 @@ export class PostRepository extends Repository<IPostMongoDB, PostModel> {
           as: 'user'
         }
       },
+      { $sort: { _id: -1 } },
       { $unwind: '$user' }
     ])
 

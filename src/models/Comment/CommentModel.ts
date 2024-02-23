@@ -32,6 +32,7 @@ export class CommentModel extends Model<IComment> {
     this._userId = comment.userId
     this._postId = comment.postId
     this._text = comment.text
+    this.createdAt = comment.createdAt
   }
 
   get userId (): IComment['userId'] {

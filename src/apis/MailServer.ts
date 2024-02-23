@@ -23,6 +23,14 @@ class MailServer {
       receiver
     })
   }
+
+  async sendNewAdminPostMail (receiver: string): Promise<void> {
+    await this.instance.post<ISendMailData>('/emails', {
+      subject: 'Nova publicação!',
+      html: '<h1>Nova publicação efetuada por um Admin</h1>',
+      receiver
+    })
+  }
 }
 
 export default new MailServer()

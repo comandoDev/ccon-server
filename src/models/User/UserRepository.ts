@@ -5,6 +5,14 @@ import { IUser, UserModel } from './UserModel'
 import { IUserMongoDB } from './UserSchema'
 
 export class UserRepository extends Repository<IUserMongoDB, UserModel> {
+  async findAll (): Promise<Array<UserModel>> {
+    const documents = await this.mongoDB.find({ admin: false })
+
+    const models = (documents || []).map(document => new UserModel(document))
+
+    return models
+  }
+
   async findById (id: Types.ObjectId): Promise<UserModel | null> {
     const document = await this.mongoDB.findOne({
       _id: id
