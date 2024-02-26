@@ -52,7 +52,7 @@ export class PostService {
   }
 
   async create (post: PostModel): Promise<PostModel> {
-    const isAdmin = await UserServiceImp.isAdmin(post.userId)
+    // const isAdmin = await UserServiceImp.isAdmin(post.userId)
 
     const createdPost = await this.postRepositoryImp.create(post)
 

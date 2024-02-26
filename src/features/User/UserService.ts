@@ -59,8 +59,6 @@ export class UserService {
   }
 
   async create (user: UserModel): Promise<UserModel> {
-    user._id = new Types.ObjectId()
-
     await this.validateDuplicatedEmail(user.object.email)
 
     return await this.userRepositoryImp.create(user)
