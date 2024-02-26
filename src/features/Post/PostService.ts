@@ -1,4 +1,3 @@
-import MailServer from '../../apis/MailServer'
 import { UserServiceImp } from '../../features/User/UserController'
 import { CommentModel, ICommentCreationProps } from '../../models/Comment/CommentModel'
 import { IPost, IPostListFilters, PostModel } from '../../models/Post/PostModel'
@@ -57,13 +56,13 @@ export class PostService {
 
     const createdPost = await this.postRepositoryImp.create(post)
 
-    if (isAdmin) {
-      const users = await UserServiceImp.findAll()
+    // if (isAdmin) {
+    //   const users = await UserServiceImp.findAll()
 
-      Promise.all(users.map(async (user) => {
-        await MailServer.sendNewAdminPostMail(user.object.email)
-      }))
-    }
+    //   Promise.all(users.map(async (user) => {
+    //     await MailServer.sendNewAdminPostMail(user.object.email)
+    //   }))
+    // }
 
     return createdPost
   }
@@ -99,7 +98,7 @@ export class PostService {
     const pinnedPosts = await this.postRepositoryImp.findAllPinneds()
 
     if (pinnedPosts.length >= 5) {
-      const firstPinned = pinnedPosts[4]
+      const firstPinned = pinnedPosts[0]
 
       await this.update(firstPinned._id!.toString(), {
         pinned: false
