@@ -38,7 +38,7 @@ export class Server {
   }
 
   start (): void {
-    this._app.listen(this.port, '10.0.12.166', () => {
+    this._app.listen(this.port, () => {
       console.log(`Server running at: ${this.port}`)
     })
   }
