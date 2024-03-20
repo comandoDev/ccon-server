@@ -76,21 +76,12 @@ export class UserModel extends Model<IUser> {
       name: this._name,
       email: this._email,
       password: this._password,
-      departament: this._departament
+      departament: this._departament,
+      createdAt: this.createdAt
     }
   }
 
   get show () {
-    return {
-      _id: this._id,
-      active: this._active,
-      admin: this._admin,
-      avatar: this._avatar,
-      gender: this._gender,
-      name: this._name,
-      email: this._email,
-      departament: this._departament,
-      createdAt: this.createdAt
-    }
+    return this.object
   }
 }

@@ -88,22 +88,16 @@ export class PostModel extends Model<IPost> {
       active: this._active,
       body: this._body,
       userId: this._userId,
-      comments: this._comments
+      createdAt: this.createdAt
     }
   }
 
   get show (): IPost {
     return {
-      _id: this._id,
-      file: this._file,
-      pinned: this._pinned,
-      active: this._active,
-      body: this._body,
-      userId: this._userId,
+      ...this.object,
       likes: this._likes,
       comments: this._comments,
-      user: this._user,
-      createdAt: this.createdAt
+      user: this._user
     }
   }
 

@@ -1,14 +1,14 @@
 {
     "[javascript]": {
       "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-        "source.fixAll": true
+        "source.fixAll.eslint": "explicit",
+        "source.fixAll": "explicit"
       },
     },
     "[typescript]": {
       "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true,
-        "source.fixAll": true
+        "source.fixAll.eslint": "explicit",
+        "source.fixAll": "explicit"
       },
       "typescript.preferences.importModuleSpecifier": "non-relative"
     },

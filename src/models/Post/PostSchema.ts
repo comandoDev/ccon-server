@@ -29,10 +29,7 @@ class PostSchema extends Schema<IPostDocument> {
         require: true,
         ref: UserMongoDB
       },
-      createdAt: {
-        type: Date,
-        default: Date.now()
-      }
+      createdAt: Date
     })
 
     super(post)
