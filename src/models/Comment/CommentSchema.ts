@@ -26,10 +26,7 @@ class CommentSchema extends Schema<ICommentDocument> {
         type: String,
         require: true
       },
-      createdAt: {
-        type: Date,
-        default: Date.now()
-      }
+      createdAt: Date
     })
 
     super(comment)

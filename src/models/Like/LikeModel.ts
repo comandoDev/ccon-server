@@ -45,17 +45,15 @@ export class LikeModel extends Model<ILike> {
     return {
       _id: this._id,
       userId: this._userId,
-      postId: this._postId
+      postId: this._postId,
+      createdAt: this.createdAt
     }
   }
 
   get show (): ILike {
     return {
-      _id: this._id,
-      user: this._user,
-      userId: this._userId,
-      postId: this._postId,
-      createdAt: this.createdAt
+      ...this.object,
+      user: this._user
     }
   }
 }

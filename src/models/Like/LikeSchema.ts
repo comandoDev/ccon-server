@@ -22,10 +22,7 @@ class LikeSchema extends Schema<ILikeDocument> {
         ref: PostMongoDB,
         require: true
       },
-      createdAt: {
-        type: Date,
-        default: Date.now()
-      }
+      createdAt: Date
     })
 
     super(like)

@@ -32,7 +32,6 @@ export class CommentModel extends Model<IComment> {
     this._userId = comment.userId
     this._postId = comment.postId
     this._text = comment.text
-    this.createdAt = comment.createdAt
   }
 
   get userId (): IComment['userId'] {
@@ -60,18 +59,15 @@ export class CommentModel extends Model<IComment> {
       _id: this._id,
       userId: this._userId,
       postId: this._postId,
-      text: this._text
+      text: this._text,
+      createdAt: this.createdAt
     }
   }
 
   get show (): IComment {
     return {
-      _id: this._id,
-      user: this._user,
-      userId: this._userId,
-      postId: this._postId,
-      text: this._text,
-      createdAt: this.createdAt
+      ...this.object,
+      user: this._user
     }
   }
 }

@@ -42,10 +42,7 @@ class UserSchema extends Schema<IUserDocument> {
         default: false
       },
       avatar: String,
-      createdAt: {
-        type: Date,
-        default: Date.now()
-      }
+      createdAt: Date
     })
 
     user.pre<IUserDocument>('save', async function (): Promise<void> {
