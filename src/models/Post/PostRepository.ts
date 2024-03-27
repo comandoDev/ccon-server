@@ -82,7 +82,7 @@ export class PostRepository extends Repository<IPostMongoDB, PostModel> {
           as: 'user'
         }
       },
-      { $sort: { _id: -1 } },
+      { $sort: { createdAt: -1 } },
       { $unwind: '$user' }
     ])
 
